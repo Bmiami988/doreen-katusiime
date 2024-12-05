@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f3f4f6;
+    }
+
+    .calculator {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    .display {
+      width: 100%;
+      height: 50px;
+      font-size: 1.5rem;
+      text-align: right;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.2rem;
+      background: #0078d4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    button.function {
+      background: #ff6f61;
+    }
+
+    button.function:hover {
+      background: #e55d50;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="display" class="display" readonly>
+    <div class="buttons">
+      <button onclick="appendValue('7')">7</button>
+      <button onclick="appendValue('8')">8</button>
+      <button onclick="appendValue('9')">9</button>
+      <button onclick="setOperator('/')">/</button>
+
+      <button onclick="appendValue('4')">4</button>
+      <button onclick="appendValue('5')">5</button>
+      <button onclick="appendValue('6')">6</button>
+      <button onclick="setOperator('*')">*</button>
+
+      <button onclick="appendValue('1')">1</button>
+      <button onclick="appendValue('2')">2</button>
+      <button onclick="appendValue('3')">3</button>
+      <button onclick="setOperator('-')">-</button>
+
+      <button onclick="appendValue('0')">0</button>
+      <button onclick="appendValue('.')">.</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="setOperator('+')">+</button>
+
+      <button onclick="calculateResult()" style="grid-column: span 2;">=</button>
+      <button class="function" onclick="calculateFunction('sqrt')">&radic;</button>
+      <button class="function" onclick="calculateFunction('log')">log</button>
+      <button class="function" onclick="calculateFunction('sin')">sin</button>
+      <button class="function" onclick="calculateFunction('cos')">cos</button>
+      <button class="function" onclick="calculateFunction('tan')">tan</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = '';
+    let operator = null;
+    let firstOperand = null;
+
+    const display = document.getElementById('display');
+
+    function appendValue(value) {
+      currentInput += value;
+      updateDisplay(currentInput);
+    }
+
+    function setOperator(op) {
+      if (currentInput !== '') {
+        firstOperand = parseFloat(currentInput);
+        operator = op;
+        currentInput = '';
+      }
+    }
+
+    function calculateResult() {
+      if (firstOperand !== null && operator !== null && currentInput !== '') {
+        const secondOperand = parseFloat(currentInput);
+        let result;
+        switch (operator) {
+          case '+':
+            result = firstOperand + secondOperand;
+            break;
+          case '-':
+            result = firstOperand - secondOperand;
+            break;
+          case '*':
+            result = firstOperand * secondOperand;
+            break;
+          case '/':
+            result = firstOperand / secondOperand;
+            break;
+          default:
+            return;
+        }
+        updateDisplay(result);
+        resetCalculator();
+        currentInput = result.toString();
+      }
+    }
+
+    function calculateFunction(func) {
+      if (currentInput !== '') {
+        let result;
+        const value = parseFloat(currentInput);
+        switch (func) {
+          case 'sqrt':
+            result = Math.sqrt(value);
+            break;
+          case 'log':
+            result = Math.log10(value);
+            break;
+          case 'sin':
+            result = Math.sin(value * Math.PI / 180);
+            break;
+          case 'cos':
+            result = Math.cos(value * Math.PI / 180);
+            break;
+          case 'tan':
+            result = Math.tan(value * Math.PI / 180);
+            break;
+          default:
+            return;
+        }
+        updateDisplay(result);
+        currentInput = result.toString();
+      }
+    }
+
+    function clearDisplay() {
+      resetCalculator();
+      updateDisplay('');
+    }
+
+    function resetCalculator() {
+      currentInput = '';
+      operator = null;
+      firstOperand = null;
+    }
+
+    function updateDisplay(value) {
+      display.value = value;
+    }
+  </script>
+</body>
+</html>
